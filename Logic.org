@@ -48,8 +48,8 @@ inputs: stack, condition to check for valid solution, next cell value
 1. Evaluate cell value
 2. is cell value less than 10
 3. if step 2 is yes then jump to 4 else jump to step 5
-4. call this function with next cell
-5. call this function with prev cell
+4. call this function with next cell, if there is no next cell then return
+5. call this function with prev cell, if there is nothing in stack return
 
 ** Verify the solution
 Algorithm to verify the solution for sudoku
