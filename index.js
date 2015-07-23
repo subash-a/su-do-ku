@@ -155,10 +155,25 @@ function solutionIterator(array) {
 	return {solvedMatrix: array, solutions: solutionStack}
 }
 
+function isSolutionCorrect(array) {
+	return !array.some(function(row) {
+		var r = row.sort();
+		for(i = 0; i < r.length; i ++) {
+			if(r[i] === r[i+1]) {
+				return true;
+			}
+		}
+		if(r.reduce(function(sum,val){return sum+val;}) !== 45) {
+			return true;
+		}
+	})
+}
+
 sampleBoard = createSudokuBoard();
 console.log('*************Unsolved Sudoku Board**********')
 printSudokuBoard(sampleBoard);
 var result = solutionIterator(sampleBoard);
 console.log("**********Solved Sudoku Board***********")
 printSudokuBoard(result.solvedMatrix);
+console.log(isSolutionCorrect(result.solvedMatrix));
 //console.log(result.solutions);

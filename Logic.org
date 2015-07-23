@@ -47,6 +47,16 @@ Recursive Function for checking solution
 inputs: stack, condition to check for valid solution, next cell value
 1. Evaluate cell value
 2. is cell value less than 10
-3. if step 3 is yes then ... else ...
-4. move to next cell
-5. move to prev cell result and evaluate
+3. if step 2 is yes then jump to 4 else jump to step 5
+4. call this function with next cell
+5. call this function with prev cell
+
+** Verify the solution
+Algorithm to verify the solution for sudoku
+
+1. Extract all rows and columns
+2. Sort all rows and columns in ascending order
+3. Iterate through the array to see if an element repeats (easy if they are
+sorted since they would be right next to each other)
+4. Also verify that the sum of the digits is equal to sum of 1 through 9
+5. If both step 3 and 4 yield true then solution is verified successfully
