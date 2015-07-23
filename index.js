@@ -11,13 +11,14 @@
 1 2 3 4 5 6 7 8 9
 1 2 3 4 5 6 7 8 9
 */
-function arrayRandomizer(array) {
-	var swap = function(array,i,j) {
-		var temp = array[i];
-		array[i] = array[j];
-		array[j] = temp;
-		return array;
-	}
+var swap = function(array,i,j) {
+	var temp = array[i];
+	array[i] = array[j];
+	array[j] = temp;
+	return array;
+}
+
+function randomizeArrayElements(array) {
 	array.forEach(function(val, index, list){
 		var randomIndex = parseInt(Math.random()*list.length,10);
 		swap(list,randomIndex,index);
@@ -29,31 +30,55 @@ function generateRandomPair(range1, range2) {
 	return [parseInt(Math.random()*range1,10),parseInt(Math.random()*range2,10)];
 }
 
+function rotateArray(array) {
+	array.push(array.shift())
+	return array;
+}
+
+function randomizeRows(array) {
+	var swapIndices = generateRandomPair(9,9);
+	swap(array, swapIndices[0],swapIndices[1]);
+	return array;
+}
+
+function removeRandomEntries(array, number) {
+	for(j = 0; j < number; j++) {
+		var randomIndexes = generateRandomPair(9,9);
+		array[randomIndexes[0]][randomIndexes[1]] = '?';
+	}
+	return array;
+}
+
 function createSudokuBoard() {
 	var seedRow = [1,2,3,4,5,6,7,8,9];
+	var offsets = randomizeArrayElements(seedRow.slice());
 	var board = [];
-	for (i = 0; i < 9; i ++) {
-		board[i] = arrayRandomizer(seedRow.slice());// new instance of array needs to be passed since passing same array will modify the seedRow itself resulting in same row being repeated.
+	var entry = offsets.slice();
+	for(i = 0; i < 9; i ++) {
+		board.push(entry);
+		entry = rotateArray(entry.slice());
 	}
-	for(j = 0; j < 9; j++) {
-		var randomIndexes = generateRandomPair(9,9);
-		board[randomIndexes[0]][randomIndexes[1]] = '?';
-	}
+	board = randomizeRows(board);
+	board = removeRandomEntries(board, 35);
 	return board;
 }
 
-
+function printSudokuBoard(board) {
+	board.forEach(function(row){
+		console.log('|---+---+---+---+---+---+---+---+---|');
+		console.log('| ' + row.join(' | ') + ' |');
+	});
+	console.log('|---+---+---+---+---+---+---+---+---|');
+}
 
 // Sudoku solver functions
 function isElementInRow(array,index, element) {
 	var row = array[index];
-	console.log('element '+ element +' in row' + row);
 	return (row.indexOf(element) !== -1);
 }
 
 function isElementInColumn(array,index, element) {
 	var column = array.map(function(row){return row[index]})
-	console.log('element '+ element +' in column' + column);
 	return (column.indexOf(element) !== -1);
 }
 
@@ -73,7 +98,7 @@ function pointSolver(array, location, initialPossibleSolution) {
 	while(!isValidSolution(array, location, possibleSolution) && possibleSolution < 11) {
 		possibleSolution ++;
 	}
-	return {currentSolution: possibleSolution, location: location};
+	return {value: possibleSolution, location: location};
 }
 
 function getEmptyCellLocations(array) {
@@ -88,15 +113,52 @@ function getEmptyCellLocations(array) {
 	return locations;
 }
 
+function isSolutionWithinBounds(solution) {
+	if(solution.value < 10) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 function solutionIterator(array) {
 	var solutionStack = [];
 	var emptyCells = getEmptyCellLocations(array);
-	emptyCells.forEach(function(cell){
-		solutionStack.push(pointSolver(array,cell,1));
-	})
-	console.log(solutionStack);
+	var index = 0;
+	var recursiveSolver = function(array, cell, value) {
+		//console.log(solutionStack.length);
+		var currentSolution = pointSolver(array,cell,value);
+		if(isSolutionWithinBounds(currentSolution)) {
+			solutionStack.push(currentSolution);
+			array[currentSolution.location[0]][currentSolution.location[1]] = currentSolution.value;
+			if(index+1 < emptyCells.length) {
+				return recursiveSolver(array,emptyCells[++index], 1);
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			--index;
+			if(solutionStack.length) {
+				var prevSolution = solutionStack.pop();
+				array[prevSolution.location[0]][prevSolution.location[1]] = '?';
+				return recursiveSolver(array, prevSolution.location, ++prevSolution.value);
+			}
+			else {
+				return 0;
+			}
+		}
+	}
+	recursiveSolver(array,emptyCells[index],1);
+	return {solvedMatrix: array, solutions: solutionStack}
 }
 
 sampleBoard = createSudokuBoard();
-console.log(sampleBoard);
-solutionIterator(sampleBoard);
+console.log('*************Unsolved Sudoku Board**********')
+printSudokuBoard(sampleBoard);
+var result = solutionIterator(sampleBoard);
+console.log("**********Solved Sudoku Board***********")
+printSudokuBoard(result.solvedMatrix);
+//console.log(result.solutions);
