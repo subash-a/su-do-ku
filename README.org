@@ -1,0 +1,6 @@
+* Sudoku Generator and Solver
+The contents are just an experiment on how to generate a sudoku board and solve it using the backtracking technique.
+Lots of room for improvement, in the way solution is obtained. Tests also can be improved for better verification of the solution.
+Will implement when time permits.
+
+The project can be run using <code> node index.js </code>
