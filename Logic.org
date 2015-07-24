@@ -37,10 +37,8 @@ Algorithm to solve the sudoku board
 1. List out all the empty cell locations
 2. Take the first empty cell and try some values
 3. if one of the value matches, store it in a stack and move to the next cell
-4. if the next cell value does not meet criteria and options are exhausted,
-come back to the stack modify the previous result and try again
-5. Repeat the step 4 until the either all the options for the first result get exhausted
-or until all the solutions are obtained.
+4. if the next cell value does not meet criteria and options are exhausted, come back to the stack modify the previous result and try again
+5. Repeat the step 4 until the either all the options for the first result get exhausted or until all the solutions are obtained.
 
 Recursive Function for checking solution
 
@@ -56,7 +54,6 @@ Algorithm to verify the solution for sudoku
 
 1. Extract all rows and columns
 2. Sort all rows and columns in ascending order
-3. Iterate through the array to see if an element repeats (easy if they are
-sorted since they would be right next to each other)
+3. Iterate through the array to see if an element repeats (easy if they are sorted since they would be right next to each other)
 4. Also verify that the sum of the digits is equal to sum of 1 through 9
 5. If both step 3 and 4 yield true then solution is verified successfully
